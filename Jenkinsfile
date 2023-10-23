@@ -5,7 +5,7 @@ pipeline {
         RepoDockerHub = 'christianscha'
         NameContainer = 'pokedex-flask'
     }
-/*
+
     stages {
         stage('Build'){
             steps{
@@ -38,4 +38,4 @@ pipeline {
         }
     }
 }
-*/
+
