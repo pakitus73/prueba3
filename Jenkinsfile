@@ -5,12 +5,14 @@ pipeline {
         RepoDockerHub = 'pakitus73'
         NameContainer = 'pokedex-flask'
     }    
-    stages {
+    
+    stages {        
         stage('Build'){
             steps{
                 sh "docker build -t pakitus73/pokedex-flask:${env.BUILD_NUMBER} ."
             }
         }
+        
         stage('Login to Dockerhub'){
             steps{
                 sh "echo $DOCKERHUB_CREDENCIALS_PSW | docker login -u $DOCKERHUB_CREDENCIALS_USR --password-stdin "
@@ -22,6 +24,12 @@ pipeline {
                 sh "docker push ${env.RepoDockerHub}/${env.NameContainer}:${env.BUILD_NUMBER} "
             }
         }       
+
+        stage('Deploy container'){
+            steps{
+                sh "if [ 'docker stop ${env.NameContainer}' ] ; then docker rm -f ${env.NameContainer} && docker run -d --name ${env.NameContainer} -p 5000:5000 ${env.RepoDockerHub}/${env.NameContainer}:${env.BUILD_NUMBER} ; else docker run -d --name pokedex-flask -p 5000:5000 ${env.RepoDockerHub}/${env.NameContainer}:${env.BUILD_NUMBER} ; fi"
+            }
+        }        
     }
 
     
